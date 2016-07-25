@@ -3,7 +3,6 @@ var path = require('path');
 
 module.exports = {
 	entry: {
-		"vendor": "./public/app/vendor",
 		"app": "./public/app/boot"
 	},
 	output: {
@@ -21,8 +20,5 @@ module.exports = {
 				exclude: [/node_modules/, /vendor/]
 			}
 		]
-	},
-	plugins: [
-		new webpack.optimize.CommonsChunkPlugin(/* chunkName= */"vendor", /* filename= */"./vendor.bundle.js")
-	]
+	}
 }
