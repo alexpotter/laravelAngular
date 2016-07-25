@@ -18,11 +18,11 @@ module.exports = {
 			{
 				test: /\.ts/,
 				loaders: ['ts-loader'],
-				exclude: [/node_modules/, /vendor\/\*/]
+				exclude: [/node_modules/, /vendor/]
 			}
 		]
 	},
 	plugins: [
-		new webpack.optimize.CommonsChunkPlugin(/* chunkName= */"vendor", /* filename= */"./public/vendor.bundle.js")
+		new webpack.optimize.CommonsChunkPlugin(/* chunkName= */"vendor", /* filename= */"./vendor.bundle.js")
 	]
 }

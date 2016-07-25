@@ -8,6 +8,6 @@
 <my-app>Loading...</my-app>
 </body>
 
-<script src="vendor.bundle.js"></script>
-<script src="app.bundle.js"></script>
+<script src="http://localhost:8080/vendor.bundle.js"></script>
+<script src="http://localhost:8080/app.bundle.js"></script>
 </html>
