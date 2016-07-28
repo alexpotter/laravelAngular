@@ -11,6 +11,16 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Frontend
+
+Route::get('/', 'IndexController@index');
+
+// Customer
+
+
+
+// Admin
+
+
+
+// Api

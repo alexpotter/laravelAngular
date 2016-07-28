@@ -39,11 +39,6 @@
 	</div>
 </div>
 </body>
-@if(env('APP_ENV') == 'local')
-	<script src="http://localhost:8080/require.bundle.js"></script>
-	<script src="http://localhost:8080/app.bundle.js"></script>
-@else
-	<script src="{{ url('require.bundle.js') }}"></script>
-	<script src="{{ url('app.bundle.js') }}"></script>
-@endif
+<script src="{{ $requireScript }}"></script>
+<script src="{{ $appScript }}"></script>
 </html>
