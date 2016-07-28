@@ -3,7 +3,8 @@ var path = require('path');
 
 module.exports = {
 	entry: {
-		"app": "./public/app/boot"
+		"require": "./public/app/config/require",
+		"app": "./public/app/config/boot"
 	},
 	output: {
 		path: path.join(__dirname, 'public'),

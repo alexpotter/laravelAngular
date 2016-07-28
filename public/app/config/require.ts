@@ -9,8 +9,3 @@ import '@angular/http';
 import '@angular/platform-browser';
 import '@angular/platform-browser-dynamic';
 import '@angular/router-deprecated';
-
-import {bootstrap}    from '@angular/platform-browser-dynamic'
-import {AppComponent} from './app.component'
-
-bootstrap(AppComponent);
