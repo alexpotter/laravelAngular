@@ -6,13 +6,13 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
-class IndexController extends Controller
+class IndexController extends AngularController
 {
     public function index()
     {
 	    return view('welcome', [
-	    	'requireScript'    => config('app.env') == 'local' ? 'http://localhost:8080/require.bundle.js' : url('require.bundle.js'),
-		    'appScript'        => config('app.env') == 'local' ? 'http://localhost:8080/app.bundle.js' : url('app.bundle.js'),
+	    	'requireScript'    => $this->requireScript,
+		    'appScript'        => $this->appScript,
 	    ]);
     }
 }
