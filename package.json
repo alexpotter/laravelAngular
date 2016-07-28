@@ -1,5 +1,5 @@
 {
-  "name": "vip-enterprise",
+  "name": "my-angular-appp",
   "private": true,
   "scripts": {
     "prod": "gulp --production",
