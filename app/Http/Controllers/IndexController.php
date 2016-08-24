@@ -11,8 +11,14 @@ class IndexController extends AngularController
     public function index()
     {
 	    return view('welcome', [
-	    	'requireScript'    => $this->requireScript,
 		    'appScript'        => $this->appScript,
 	    ]);
     }
+
+	public function angular()
+	{
+		return view('angular', [
+			'appScript'        => $this->appScript,
+		]);
+	}
 }

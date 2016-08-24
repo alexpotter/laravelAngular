@@ -11,16 +11,5 @@
 |
 */
 
-// Frontend
-
 Route::get('/', 'IndexController@index');
-
-// Customer
-
-
-
-// Admin
-
-
-
-// Api
+Route::get('/angular', 'IndexController@angular');
