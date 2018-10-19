@@ -11,6 +11,6 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Controllers\AppController;
+
+$this->get('{all}', AppController::class . '@index')->where('all', '^((?!api).)*$');
