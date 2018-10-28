@@ -1,10 +1,25 @@
 {
+	"rulesDirectory": [
+		"tslint-plugin-prettier"
+	],
 	"extends": [
 		"angular-tslint-rules",
 		"tslint:latest",
-		"rxjs-tslint-rules"
+		"rxjs-tslint-rules",
+		"tslint-plugin-prettier"
 	],
 	"rules": {
+		"prettier": [
+			true,
+			{
+				"parser": "typescript",
+				"useTabs": true,
+				"semi": false,
+				"singleQuote": true,
+				"trailingComma": "all",
+				"arrowParens": "always"
+			}
+		],
 		"interface-name": [true, "never-prefix"],
 		"no-console": [false],
 		"indent": [true, "tabs", 1],

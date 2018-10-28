@@ -8,6 +8,4 @@ import { Component } from '@angular/core'
 </div>
 `,
 })
-export class IndexComponent {
-
-}
+export class IndexComponent {}
