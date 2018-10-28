@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const { CheckerPlugin, TsConfigPathsPlugin } = require('awesome-typescript-loader')
+const helpers = require('./webpack.helpers')
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -83,6 +84,13 @@ config = {
     },
     plugins: [
         new CheckerPlugin(),
+        // Workaround for Critical dependency
+        // The request of a dependency is an expression in ./node_modules/@angular/core/fesm5/core.js
+        new webpack.ContextReplacementPlugin(
+            /\@angular(\\|\/)core(\\|\/)fesm5/,
+            helpers.root('./resources/angular/app'),
+            {}
+        )
     ]
 }
 
