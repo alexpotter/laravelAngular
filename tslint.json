@@ -9,17 +9,7 @@
 		"tslint-plugin-prettier"
 	],
 	"rules": {
-		"prettier": [
-			true,
-			{
-				"parser": "typescript",
-				"useTabs": true,
-				"semi": false,
-				"singleQuote": true,
-				"trailingComma": "all",
-				"arrowParens": "always"
-			}
-		],
+		"prettier": [true, ".prettierrc"],
 		"interface-name": [true, "never-prefix"],
 		"no-console": [false],
 		"indent": [true, "tabs", 1],
@@ -27,8 +17,6 @@
 		"ordered-imports": false,
 		"quotemark": [true, "single", "avoid-escape", "avoid-template"],
 		"object-literal-sort-keys": false,
-		"rxjs-add": { "severity": "error" },
-		"rxjs-no-unused-add": { "severity": "error" },
 		"no-submodule-imports": false,
 		"no-default-export": false,
 		"variable-name": false,
@@ -39,7 +27,9 @@
 			"element", [], "kebab-case"
 		],
 		"no-implicit-dependencies": false,
-		"file-name-casing": false
+		"file-name-casing": false,
+		"newline-per-chained-call": false,
+		"max-line-length": [true, {"limit": 120, "ignore-pattern": "^import |^export {(.*?)}"}]
 	},
 	"rulesDirectory": [
 		"node_modules/codelyzer"
