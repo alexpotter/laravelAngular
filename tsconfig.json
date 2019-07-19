@@ -20,5 +20,8 @@
 		"dist",
 		"typings",
 		"vendor"
-	]
+	],
+	"angularCompilerOptions": {
+		"enableIvy": true
+	}
 }

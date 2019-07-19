@@ -7,4 +7,6 @@ import { AppModule } from '@client/config/module'
 
 platformBrowserDynamic()
 	.bootstrapModule(AppModule)
-	.catch((err) => console.error(err))
+	.catch((err) => {
+		console.error(err)
+	})
