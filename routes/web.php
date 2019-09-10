@@ -12,5 +12,6 @@
 */
 
 use App\Http\Controllers\AppController;
+use Illuminate\Support\Facades\Route;
 
-$this->get('{all}', AppController::class . '@index')->where('all', '^((?!api).)*$');
+Route::get('{all}', AppController::class . '@index')->where('all', '^((?!api).)*$');
