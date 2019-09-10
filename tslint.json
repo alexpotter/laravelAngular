@@ -1,5 +1,6 @@
 {
 	"rulesDirectory": [
+		"node_modules/codelyzer",
 		"tslint-plugin-prettier"
 	],
 	"extends": [
@@ -30,9 +31,8 @@
 		"file-name-casing": false,
 		"newline-per-chained-call": false,
 		"max-line-length": [true, {"limit": 120, "ignore-pattern": "^import |^export {(.*?)}"}],
-		"no-import-side-effect": false
-	},
-	"rulesDirectory": [
-		"node_modules/codelyzer"
-	]
+		"object-literal-key-quotes": [true, "as-needed"],
+		"no-import-side-effect": false,
+		"no-floating-promises": false
+	}
 }

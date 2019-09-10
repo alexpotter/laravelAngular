@@ -2,6 +2,10 @@ const webpack = require('webpack');
 const path = require('path');
 const { CheckerPlugin, TsConfigPathsPlugin } = require('awesome-typescript-loader')
 const helpers = require('./webpack.helpers')
+const TerserJSPlugin = require('terser-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally')
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -9,8 +13,15 @@ config = {
     devtool: isProduction ? 'source-map' : 'inline-source-map',
     mode: isProduction ? 'production' : 'development',
     entry: {
-        app: "./resources/angular/app/admin/config/main",
-        client: "./resources/angular/app/client/config/main",
+        app: [
+            './resources/angular/app/admin/config/main',
+            './resources/assets/sass/admin/styles.scss',
+        ],
+        client: [
+            './resources/angular/app/client/config/main',
+            './resources/assets/sass/client/styles.scss',
+        ],
+        public: './resources/assets/sass/frontend/styles.scss',
     },
     mode: isProduction ? 'production' : 'development',
     target: 'web',
@@ -32,6 +43,7 @@ config = {
         runtimeChunk: {
             name: 'manifest',
         },
+        minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
     },
     devServer: {
         contentBase: path.join(__dirname, 'public'),
@@ -41,6 +53,7 @@ config = {
         headers: {
             'Access-Control-Allow-Origin': '*',
         },
+        disableHostCheck: true,
     },
     resolve: {
         extensions: ['.ts', '.js', 'html'],
@@ -55,32 +68,58 @@ config = {
             {
                 test: /.js$/,
                 parser: {
-                    system: true
-                }
+                    system: true,
+                },
             },
-            // Typescript
             {
                 test: /\.ts$/,
                 loaders: [
                     {
                         loader: 'awesome-typescript-loader',
                         options: { configFileName: path.join(__dirname, 'tsconfig.json') }
-                    } , 'angular2-template-loader'
-                ]
+                    },
+                    'angular2-template-loader',
+                ],
             },
-            // index file
             {
-                test: /index.html$/i,
+                test: /\.html$/,
+                loader: 'html-loader',
+                options: {
+                    minimize: false,
+                    removeComments: false,
+                    collapseWhitespace: false,
+                    removeAttributeQuotes: false,
+                },
+            },
+            {
+                test: /\.css$/,
+                use: ['to-string-loader', 'css-loader'],
+                include: path.join(__dirname, 'resources/angular'),
+
+            },
+            {
+                test: /\.s?css$/,
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                    },
+                    'css-loader',
+                    'sass-loader',
+                ],
+                exclude: path.join(__dirname, 'resources/angular'),
+            },
+            {
+                test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
                 use: [
                     {
                         loader: 'file-loader',
                         options: {
-                            name: '[name].[ext]'
-                        }
-                    }
-                ]
+                            name: '[name].[ext]',
+                        },
+                    },
+                ],
             },
-        ]
+        ],
     },
     plugins: [
         new CheckerPlugin(),
@@ -90,8 +129,27 @@ config = {
             /\@angular(\\|\/)core(\\|\/)fesm5/,
             helpers.root('./resources/angular/app'),
             {}
-        )
-    ]
+        ),
+        new MiniCssExtractPlugin({
+            filename: '[name].css',
+            allChunks: true,
+        }),
+        new MergeIntoSingleFilePlugin({
+            files: {
+                'public.bundle.js': [
+                    'node_modules/jquery/dist/jquery.min.js',
+                    'node_modules/jquery-colorbox/jquery.colorbox.js',
+                    'node_modules/smooth-scroll/dist/js/smooth-scroll.js',
+                    'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
+                    'resources/assets/js/justified-gallery.js',
+                    'resources/assets/js/frontend.js',
+                ],
+            },
+            transform: {
+                'public.bundle.js': code => require('uglify-js').minify(code).code,
+            },
+        }),
+    ],
 }
 
 if (!isProduction) {
@@ -101,6 +159,9 @@ if (!isProduction) {
         enforce: 'pre',
         use: {
             loader: 'tslint-loader',
+            options: {
+                tsConfigFile: './tslint.json',
+            },
         },
     })
 }
