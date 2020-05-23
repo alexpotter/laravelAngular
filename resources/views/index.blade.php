@@ -17,12 +17,8 @@
 
 <my-app></my-app>
 
-@if (config('app.env') === 'local')
-    <script type="text/javascript" src="http://localhost:3080/assets/manifest.bundle.js"></script>
-    <script type="text/javascript" src="http://localhost:3080/assets/vendor.bundle.js"></script>
-    <script type="text/javascript" src="http://localhost:3080/assets/app.bundle.js"></script>
-@else
-    <script type="text/javascript" src="assets/app.js"></script>
-@endif
+<script type="text/javascript" src="{{ versioned_asset('assets/manifest.js') }}"></script>
+<script type="text/javascript" src="{{ versioned_asset('assets/vendor.js') }}"></script>
+<script type="text/javascript" src="{{ versioned_asset('assets/app.js') }}"></script>
 </body>
 </html>

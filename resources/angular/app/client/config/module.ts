@@ -3,25 +3,8 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { HttpClientModule } from '@angular/common/http'
 import { FormsModule, FormBuilder, ReactiveFormsModule } from '@angular/forms'
-import {
-	MatNativeDateModule,
-	MatSidenavModule,
-	MatPaginatorModule,
-	MatOptionModule,
-	MatSlideToggleModule,
-	MatCheckboxModule,
-	MatButtonModule,
-	MatTableModule,
-	MatChipsModule,
-	MatRadioModule,
-	MatProgressBarModule,
-	MatDialogModule,
-	MatSnackBarModule,
-	MatCardModule,
-	MatInputModule,
-	MatToolbarModule,
-	MatSelectModule,
-} from '@angular/material'
+import { MatDialogModule } from '@angular/material/dialog'
+import { MatSnackBarModule } from '@angular/material/snack-bar'
 import { routing, appRoutingProviders } from '@client/config/routing'
 import { AppComponent } from '@client/Components/App.Component'
 import { IndexComponent } from '@client/Components/Index/IndexComponent'
@@ -39,23 +22,8 @@ if (process.env.NODE_ENV === 'production') {
 		HttpClientModule,
 		ReactiveFormsModule,
 		BrowserAnimationsModule,
-		MatNativeDateModule,
-		MatSidenavModule,
-		MatPaginatorModule,
-		MatOptionModule,
-		MatSlideToggleModule,
-		MatCheckboxModule,
-		MatButtonModule,
-		MatTableModule,
-		MatChipsModule,
-		MatRadioModule,
-		MatProgressBarModule,
 		MatDialogModule,
 		MatSnackBarModule,
-		MatCardModule,
-		MatInputModule,
-		MatToolbarModule,
-		MatSelectModule,
 	],
 	declarations: [AppComponent, IndexComponent, PageNotFoundComponent],
 	bootstrap: [AppComponent],
