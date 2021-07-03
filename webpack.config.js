@@ -2,13 +2,13 @@ const webpack = require('webpack');
 const path = require('path')
 const TerserJSPlugin = require('terser-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally')
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const Uglify = require('uglify-js')
-const WebpackManifest = require('webpack-manifest-plugin')
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
 const WebpackHotFilePlugin = require('./webpack.hot-file.plugin')
-const AngularCompilerPlugin = require('@ngtools/webpack').AngularCompilerPlugin
+const { AngularWebpackPlugin } = require('@ngtools/webpack')
+const ESLintPlugin = require('eslint-webpack-plugin')
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -45,7 +45,7 @@ config = {
         runtimeChunk: {
             name: 'manifest',
         },
-        minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+        minimizer: [new TerserJSPlugin({})],
     },
     devServer: {
         contentBase: path.join(__dirname, 'public'),
@@ -89,7 +89,7 @@ config = {
             },
             {
                 test: /\.css$/,
-                use: ['to-string-loader', 'css-loader'],
+                loader: 'raw-loader',
                 include: path.join(__dirname, 'resources/angular'),
 
             },
@@ -115,15 +115,25 @@ config = {
                     },
                 ],
             },
+            {
+                test: /\.(ttf|eot|svg|png|jpg|gif|ico)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[name].[ext]',
+                        },
+                    },
+                ],
+            },
         ],
     },
     plugins: [
-        new AngularCompilerPlugin({
-            tsConfigPath:  path.join(__dirname, 'tsconfig.json'),
+        new AngularWebpackPlugin({
+            tsconfig:  path.join(__dirname, 'tsconfig.json'),
         }),
         new MiniCssExtractPlugin({
             filename: '[name].css',
-            allChunks: true,
         }),
         new MergeIntoSingleFilePlugin({
             files: {
@@ -140,27 +150,20 @@ config = {
                 'public.bundle.js': code => Uglify.minify(code).code,
             },
         }),
-        new WebpackManifest({
+        new WebpackManifestPlugin({
             basePath: '/assets/'
         }),
         new WebpackHotFilePlugin({
             disabled: isProduction,
+            host: 'http://localhost:3080',
         }),
     ],
 }
 
 if (!isProduction) {
-    config.module.rules.unshift({
-        test: /\.ts$/,
-        exclude: /node_modules/,
-        enforce: 'pre',
-        use: {
-            loader: 'tslint-loader',
-            options: {
-                tsConfigFile: './tslint.json',
-            },
-        },
-    })
+    config.plugins.unshift(new ESLintPlugin({
+        extensions: 'ts',
+    }))
 }
 
 module.exports = config

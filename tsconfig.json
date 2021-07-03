@@ -1,12 +1,12 @@
 {
 	"compilerOptions": {
-		"target": "es5",
-		"module": "commonjs",
+		"target": "es2015",
+		"module": "es2020",
 		"moduleResolution": "node",
 		"sourceMap": true,
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
-		"lib": ["es7", "dom"],
+		"lib": ["es2018", "dom"],
 		"noImplicitAny": false,
 		"suppressImplicitAnyIndexErrors": true,
 		"baseUrl": "./resources/angular/app",
@@ -22,6 +22,10 @@
 		"vendor"
 	],
 	"angularCompilerOptions": {
-		"enableIvy": true
+		"enableIvy": true,
+		"fullTemplateTypeCheck": true,
+		"ivyTemplateTypeCheck": true,
+		"strictInjectionParameters": true,
+		"strictTemplates": true
 	}
 }
