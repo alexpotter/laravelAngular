@@ -45,7 +45,7 @@
         "jquery-colorbox": "^1.6.4",
         "laravel-echo": "^1.7.0",
         "lodash": "^4.17.19",
-        "moment": "^2.22.2",
+        "moment": "^2.29.2",
         "moment-timezone": "^0.5.28",
         "ngx-connection-service": "^7.0.3",
         "ngx-toastr": "^14.0.0",
