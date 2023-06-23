@@ -28,6 +28,5 @@ if (process.env.NODE_ENV === 'production') {
 	declarations: [AppComponent, IndexComponent, PageNotFoundComponent],
 	bootstrap: [AppComponent],
 	providers: [appRoutingProviders, FormBuilder],
-	entryComponents: [],
 })
 export class AppModule {}

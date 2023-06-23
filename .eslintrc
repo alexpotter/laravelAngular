@@ -9,10 +9,11 @@
 				],
 				"createDefaultProgram": true
 			},
-			"plugins": ["prettier"],
+			"plugins": ["prettier", "@typescript-eslint"],
 			"extends": [
 				"plugin:prettier/recommended",
 				"plugin:@angular-eslint/recommended",
+				"plugin:@typescript-eslint/recommended",
 				// This is required if you use inline templates in Components
 				"plugin:@angular-eslint/template/process-inline-templates"
 			],
@@ -34,7 +35,8 @@
 					"warn",
 					{ "overrides": { "constructors": "no-public" } }
 				],
-				"@typescript-eslint/prefer-readonly": 1
+				"@typescript-eslint/prefer-readonly": 1,
+				"@typescript-eslint/no-explicit-any": 0
 			}
 		},
 		{

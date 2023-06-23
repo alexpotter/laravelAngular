@@ -1,19 +1,26 @@
-const webpack = require('webpack');
-const path = require('path')
-const TerserJSPlugin = require('terser-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally')
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
-const Uglify = require('uglify-js')
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
-const WebpackHotFilePlugin = require('./webpack.hot-file.plugin')
-const { AngularWebpackPlugin } = require('@ngtools/webpack')
-const ESLintPlugin = require('eslint-webpack-plugin')
+import webpack from 'webpack'
+import path from 'path'
+import TerserJSPlugin from 'terser-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import MergeIntoSingleFilePlugin from 'webpack-merge-and-include-globally'
+import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
+import Uglify from 'uglify-js'
+import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
+import WebpackHotFilePlugin from './webpack.hot-file.plugin.js'
+import { AngularWebpackPlugin } from '@ngtools/webpack'
+import SentryWebpackPlugin from '@sentry/webpack-plugin'
+import ESLintPlugin from 'eslint-webpack-plugin'
+import { fileURLToPath } from 'url'
+import linkerPlugin from '@angular/compiler-cli/linker/babel'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
-config = {
-    devtool: isProduction ? 'source-map' : 'inline-source-map',
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const config = {
+    devtool: false, // Until angular fix the compiler
+    // devtool: isProduction ? 'source-map' : 'inline-source-map',
     mode: isProduction ? 'production' : 'development',
     entry: {
         app: './resources/angular/app/admin/config/main',
@@ -27,8 +34,8 @@ config = {
     target: 'web',
     output: {
         path: path.resolve(__dirname, 'public/assets'),
-        filename: isProduction ? '[name]-[hash].js' : '[name].js',
-        chunkFilename: isProduction ? '[name]-[hash].js' : '[name].js',
+        filename: isProduction ? '[name]-[fullhash].js' : '[name].js',
+        chunkFilename: isProduction ? '[name]-[fullhash].js' : '[name].js',
         publicPath: isProduction ? '/assets/' : 'http://localhost:3080/assets/',
     },
     optimization: {
@@ -45,20 +52,27 @@ config = {
         runtimeChunk: {
             name: 'manifest',
         },
-        minimizer: [new TerserJSPlugin({})],
+        minimizer: [
+            new TerserJSPlugin()
+        ],
     },
     devServer: {
-        contentBase: path.join(__dirname, 'public'),
-        publicPath: '/assets',
+        devMiddleware: {
+            publicPath: '/assets',
+        },
+        static: {
+            directory: path.join(__dirname, 'public'),
+        },
+        host: 'localhost',
         hot: true,
         port: 3080,
         headers: {
             'Access-Control-Allow-Origin': '*',
         },
-        disableHostCheck: true,
+        allowedHosts: 'all'
     },
     resolve: {
-        extensions: ['.ts', '.js', 'html'],
+        extensions: ['.ts', '.js', '.html'],
         plugins: [
             new TsconfigPathsPlugin({
                 configFile: './tsconfig.json',
@@ -91,7 +105,6 @@ config = {
                 test: /\.css$/,
                 loader: 'raw-loader',
                 include: path.join(__dirname, 'resources/angular'),
-
             },
             {
                 test: /\.s?css$/,
@@ -100,7 +113,9 @@ config = {
                         loader: MiniCssExtractPlugin.loader,
                     },
                     'css-loader',
-                    'sass-loader',
+                    {
+                        loader: 'sass-loader',
+                    },
                 ],
                 exclude: path.join(__dirname, 'resources/angular'),
             },
@@ -125,6 +140,17 @@ config = {
                         },
                     },
                 ],
+            },
+            {
+                test: /\.[cm]?js$/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        cacheDirectory: true,
+                        compact: false,
+                        plugins: [linkerPlugin],
+                    },
+                },
             },
         ],
     },
@@ -160,10 +186,23 @@ config = {
     ],
 }
 
+if (process.env.BUILD_SOURCE_MAPS === 'yes') {
+    config.plugins.unshift(
+        new SentryWebpackPlugin({
+            include: '.',
+            release: process.env.CIRCLE_SHA1,
+            ignore: ['node_modules', 'webpack.config.js', 'webpack.hot-file.plugin.js', 'vendor', 'resources'],
+            deploy: {
+                env: process.env.NODE_ENV,
+            },
+        }),
+    )
+}
+
 if (!isProduction) {
     config.plugins.unshift(new ESLintPlugin({
         extensions: 'ts',
     }))
 }
 
-module.exports = config
+export default config

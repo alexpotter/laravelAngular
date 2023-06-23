@@ -34,6 +34,5 @@ if (process.env.NODE_ENV === 'production') {
 	],
 	bootstrap: [AppComponent],
 	providers: [appRoutingProviders, FormBuilder],
-	entryComponents: [],
 })
 export class AppModule {}
