@@ -8,12 +8,12 @@
 		"experimentalDecorators": true,
 		"lib": ["es2018", "dom"],
 		"noImplicitAny": false,
-		"suppressImplicitAnyIndexErrors": true,
 		"baseUrl": "./resources/angular/app",
 		"paths": {
 			"@admin/*": ["admin/*"],
 			"@client/*": ["client/*"]
-		}
+		},
+		"skipLibCheck": true,
 	},
 	"exclude": [
 		"node_modules",

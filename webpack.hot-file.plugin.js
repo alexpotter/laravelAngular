@@ -1,28 +1,30 @@
-const path = require('path')
-const fs = require('fs')
+import path from 'path'
+import fs from 'fs'
 
-function WebpackHotPlugin(options) {
-    this.options = options || {}
-}
+export default class WebpackHotFilePlugin {
+    options
 
-WebpackHotPlugin.prototype.apply = function(compiler) {
-    if (this.options.disabled) return
+    constructor(options) {
+        this.options = options
+    }
 
-    if (compiler.options.devServer) {
-        const server = compiler.options.devServer
+    apply = function (compiler) {
+        if (this.options.disabled) return
 
-        if (server.hot) {
-            fs.mkdir(compiler.options.output.publicPath, function(err) {
-                fs.writeFile(
-                    path.join(compiler.options.output.path, 'hot'),
-                    this.options.host,
-                    function(err) {
-                        if (err) throw err
-                    },
-                )
-            }.bind(this))
+        if (compiler.options.devServer) {
+            const server = compiler.options.devServer
+
+            if (server.hot) {
+                fs.mkdir(compiler.options.output.publicPath, function(err) {
+                    fs.writeFile(
+                        path.join(compiler.options.output.path, 'hot'),
+                        this.options.host,
+                        function(err) {
+                            if (err) throw err
+                        },
+                    )
+                }.bind(this))
+            }
         }
     }
 }
-
-module.exports = WebpackHotPlugin
