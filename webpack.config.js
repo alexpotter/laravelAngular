@@ -2,16 +2,14 @@ import webpack from 'webpack'
 import path from 'path'
 import TerserJSPlugin from 'terser-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import MergeIntoSingleFilePlugin from 'webpack-merge-and-include-globally'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
-import Uglify from 'uglify-js'
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin'
-import WebpackHotFilePlugin from './webpack.hot-file.plugin.js'
 import { AngularWebpackPlugin } from '@ngtools/webpack'
-import SentryWebpackPlugin from '@sentry/webpack-plugin'
 import ESLintPlugin from 'eslint-webpack-plugin'
-import { fileURLToPath } from 'url'
 import linkerPlugin from '@angular/compiler-cli/linker/babel'
+import { fileURLToPath } from 'url'
+import WebpackHotFilePlugin from './webpack.hot-file.plugin.js'
+import 'dotenv/config'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -19,16 +17,11 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const config = {
-    devtool: false, // Until angular fix the compiler
-    // devtool: isProduction ? 'source-map' : 'inline-source-map',
+    devtool: isProduction ? 'source-map' : 'inline-source-map',
     mode: isProduction ? 'production' : 'development',
     entry: {
-        app: './resources/angular/app/admin/config/main',
-        client: './resources/angular/app/client/config/main',
-        "app-styles": './resources/assets/sass/admin/styles.scss',
-        "client-styles": './resources/assets/sass/client/styles.scss',
-        "public-styles": './resources/assets/sass/frontend/styles.scss',
-        "font-awesome": './resources/assets/sass/font-awesome.scss',
+        app: './resources/angular/app/client/config/main',
+        "app-styles": './resources/assets/sass/client/styles.scss',
         polyfills: './resources/angular/app/polyfills.ts',
     },
     target: 'web',
@@ -52,9 +45,7 @@ const config = {
         runtimeChunk: {
             name: 'manifest',
         },
-        minimizer: [
-            new TerserJSPlugin()
-        ],
+        minimizer: [new TerserJSPlugin()],
     },
     devServer: {
         devMiddleware: {
@@ -69,10 +60,10 @@ const config = {
         headers: {
             'Access-Control-Allow-Origin': '*',
         },
-        allowedHosts: 'all'
+        allowedHosts: 'all',
     },
     resolve: {
-        extensions: ['.ts', '.js', '.html'],
+        extensions: ['.ts', '.js', 'html'],
         plugins: [
             new TsconfigPathsPlugin({
                 configFile: './tsconfig.json',
@@ -105,6 +96,7 @@ const config = {
                 test: /\.css$/,
                 loader: 'raw-loader',
                 include: path.join(__dirname, 'resources/angular'),
+
             },
             {
                 test: /\.s?css$/,
@@ -115,20 +107,15 @@ const config = {
                     'css-loader',
                     {
                         loader: 'sass-loader',
-                    },
-                ],
-                exclude: path.join(__dirname, 'resources/angular'),
-            },
-            {
-                test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-                use: [
-                    {
-                        loader: 'file-loader',
                         options: {
-                            name: '[name].[ext]',
+                            api: "modern",
+                            sassOptions: {
+                                silenceDeprecations: ["import", "color-functions"],
+                            },
                         },
                     },
                 ],
+                exclude: path.join(__dirname, 'resources/angular'),
             },
             {
                 test: /\.(ttf|eot|svg|png|jpg|gif|ico)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -161,21 +148,6 @@ const config = {
         new MiniCssExtractPlugin({
             filename: '[name].css',
         }),
-        new MergeIntoSingleFilePlugin({
-            files: {
-                'public.bundle.js': [
-                    'node_modules/jquery/dist/jquery.min.js',
-                    'node_modules/jquery-colorbox/jquery.colorbox.js',
-                    'node_modules/smooth-scroll/dist/js/smooth-scroll.js',
-                    'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
-                    'resources/assets/js/justified-gallery.js',
-                    'resources/assets/js/frontend.js',
-                ],
-            },
-            transform: {
-                'public.bundle.js': code => Uglify.minify(code).code,
-            },
-        }),
         new WebpackManifestPlugin({
             basePath: '/assets/'
         }),
@@ -184,19 +156,6 @@ const config = {
             host: 'http://localhost:3080',
         }),
     ],
-}
-
-if (process.env.BUILD_SOURCE_MAPS === 'yes') {
-    config.plugins.unshift(
-        new SentryWebpackPlugin({
-            include: '.',
-            release: process.env.CIRCLE_SHA1,
-            ignore: ['node_modules', 'webpack.config.js', 'webpack.hot-file.plugin.js', 'vendor', 'resources'],
-            deploy: {
-                env: process.env.NODE_ENV,
-            },
-        }),
-    )
 }
 
 if (!isProduction) {

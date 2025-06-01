@@ -1,12 +1,35 @@
 import 'reflect-metadata'
 import 'rxjs'
-import 'zone.js/dist/zone'
+import 'zone.js'
 import 'hammerjs'
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'
-import { AppModule } from '@client/config/module'
+import 'bootstrap'
 
-platformBrowserDynamic()
-	.bootstrapModule(AppModule)
-	.catch((err) => {
-		console.error(err)
-	})
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
+import { appRoutingProviders, routing } from '@client/config/routing'
+import { importProvidersFrom, provideAppInitializer } from '@angular/core'
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { CommonModule } from '@angular/common'
+import { BrowserModule, bootstrapApplication } from '@angular/platform-browser'
+import { provideAnimations } from '@angular/platform-browser/animations'
+import { AppComponent } from '@client/Components/App.Component'
+
+bootstrapApplication(AppComponent, {
+	providers: [
+		importProvidersFrom(
+			routing,
+			CommonModule,
+			BrowserModule,
+			FormsModule,
+			ReactiveFormsModule,
+		),
+		provideHttpClient(withInterceptorsFromDi()),
+		appRoutingProviders,
+		provideAppInitializer(async () => {
+			console.log('Initializing application...')
+		}),
+		FormBuilder,
+		provideAnimations(),
+	],
+}).catch((err) => {
+	console.error(err)
+})

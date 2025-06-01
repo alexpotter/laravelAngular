@@ -1,8 +1,8 @@
 {
-	"parser": "typescript",
-	"useTabs": true,
-	"semi": false,
-	"singleQuote": true,
-	"trailingComma": "all",
-	"arrowParens": "always"
+    "parser": "typescript",
+    "useTabs": true,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "arrowParens": "always"
 }
